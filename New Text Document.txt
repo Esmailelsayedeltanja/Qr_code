@@ -1,0 +1,29 @@
+import cv2
+from pyzbar.pyzbar import decode
+
+# Initialize camera
+cap = cv2.VideoCapture(0)
+
+while True:
+    # Capture frame-by-frame
+    ret, frame = cap.read()
+
+    # Decode QR code
+    decoded_objects = decode(frame)
+
+    # Draw rectangles around QR codes
+    for obj in decoded_objects:
+        cv2.rectangle(frame, obj.rect, (0, 255, 0), 2)
+        cv2.putText(frame, obj.data.decode('utf-8'), (obj.rect.left, obj.rect.top-10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+    # Display the resulting frame
+    cv2.imshow('frame', frame)
+
+    # Exit if 'q' is pressed
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Release the capture and close all windows
+cap.release()
+cv2.destroyAllWindows()
